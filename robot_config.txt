@@ -1,0 +1,30 @@
+# robot_config.txt
+
+# RC Receiver configuration
+RC_SBUS_PIN = D23
+
+# Motor Control configuration for left motor
+MOTOR_LEFT_PWM_PIN = D18
+MOTOR_LEFT_DIR_PIN = D19
+MOTOR_LEFT_BRAKE_PIN = D20
+
+# Motor Control configuration for right motor
+MOTOR_RIGHT_PWM_PIN = D21
+MOTOR_RIGHT_DIR_PIN = D22
+MOTOR_RIGHT_BRAKE_PIN = D23
+
+# PWM output frequency (Hz)
+TARGET_PWM_FREQUENCY = 2000
+
+# Manual Overrides
+20: MANUAL_STOP_LEFT_PIN = D4
+MANUAL_STOP_RIGHT_PIN = D5
+MANUAL_BRAKE_PIN = D6
+
+# Speed Pulse inputs (for feedback/closed-loop control)
+SPEED_PULSE_LEFT_PIN = D7
+SPEED_PULSE_RIGHT_PIN = D8
+ 
+#xLogger configuration
+DEBUG = True
+DEBUG_LEVEL = 3
