@@ -44,10 +44,5 @@ The system is designed to be:
 
 - **main.py**  
   The main orchestrator that ties together configuration, RC input, manual overrides, motor control, speed pulse feedback, and logging.
-
-## Usage
-
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/yourusername/your-repo.git
+ https://github.com/yourusername/your-repo.git
    cd your-repo
