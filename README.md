@@ -12,6 +12,8 @@ The system is designed to be:
 
 ## Hardware
 
+This is what I'm using but there's nothing super special about this board. I had this one on in the drawer and it seemed the most versatile. YMMV.
+
 - **MCU:** FeatherS3 (ESP32-S3 from Ultimate Maker)
 - **RC Input:** FLYSKY FS-i6X using S‑Bus/PPM (all channels consolidated into a single data pin)
 - **Motor Controllers:** Two ZS‑X11H motor controllers with PWM, Direction, and Brake control
