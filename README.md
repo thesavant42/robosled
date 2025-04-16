@@ -23,26 +23,3 @@ The system is designed to be:
 
 - **robot_config.txt**  
   Contains all configuration parameters (pin mappings, PWM frequency, debug settings, etc.).
-
-- **config_loader.py**  
-  Loads the configuration file and provides a dictionary of key–value pairs for use by all modules.
-
-- **rc_receiver.py**  
-  Initializes the UART to receive and decode the S‑Bus/PPM signal from the RC receiver.
-
-- **motor_control.py**  
-  Controls the two ZS‑X11H motor controllers using PWM outputs, along with digital outputs for motor direction and braking.
-
-- **manual_overrides.py**  
-  Reads manual override switches (Left STOP, Right STOP, and Global BRAKE) from digital input pins.
-
-- **speed_pulse_reader.py**  
-  Reads speed pulse signals (one per motor) using `pulseio.PulseIn`, for use in future closed-loop (PID) control.
-
-- **logger.py**  
-  Provides centralized logging with adjustable log levels (ERROR, WARN, INFO, DEBUG).
-
-- **main.py**  
-  The main orchestrator that ties together configuration, RC input, manual overrides, motor control, speed pulse feedback, and logging.
- https://github.com/yourusername/your-repo.git
-   cd your-repo
