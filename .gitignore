@@ -1,0 +1,13 @@
+# Exclude the entire _obsoleted directory
+_obsoleted/
+
+# Exclude the .rmv folder
+.rmv/
+
+# Exclude settings.toml from tracking
+settings.toml
+
+# Optionally, you can exclude other directories or files as needed
+*.workspace
+*.code-workspace
+robosled.code-workspace
