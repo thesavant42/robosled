@@ -1,63 +1,73 @@
-# ibus_receiver.py
-# Author: savant42
+# ibus_receiver_debug.py
+# Reads FlySky IBUS packets from UART and prints CH1–CH4 with CRC verification
 
-import struct
+import time
 import board
 import busio
 
-# Set to True to print raw channel data for debugging
-debug = False
+# === CONFIGURATION ===
+IBUS_UART = busio.UART(
+    tx=board.IO43,
+    rx=board.IO44,  # Change this to your RX pin if different
+    baudrate=115200,
+    bits=8,
+    parity=None,
+    stop=2,
+    timeout=0.01,
+    receiver_buffer_size=512
+)
 
-# UART config for IBUS (FlySky protocol)
-# 115200 baud, 8 data bits, no parity, 2 stop bits
-uart = busio.UART(board.IO44, board.IO43, baudrate=115200, stop=2, timeout=0.01)
+IBUS_CHANNEL_COUNT = 14
+IBUS_PACKET_SIZE = 32
+IBUS_HEADER = b"\x20\x40"
+FAILSAFE_CH4_VALUE = 50661
 
-packet_size = 32
-buffer = bytearray(packet_size * 2)
+print("🎮 CH1–CH4 monitor with CRC debug active...")
 
-# Channel state cache
-last_ch_values = [0] * 16
+last_values = [None] * 4  # For CH1 to CH4
+buffer = bytearray()
 
-# Track previous brake state to prevent spamming
-brake_prev_state = None
+def validate_crc(packet):
+    raw_sum = sum(packet[0:30])
+    calc_crc = 0xFFFF - raw_sum
+    packet_crc = packet[30] | (packet[31] << 8)
 
-def checksum_is_valid(data):
-    received = struct.unpack_from("<H", data, 30)[0]
-    computed = 0xFFFF - sum(data[0:30])
-    return received == (computed & 0xFFFF)
+    if calc_crc != packet_crc:
+        print("❌ CRC mismatch:")
+        print(f"   → Raw sum   : {raw_sum} (0x{raw_sum:04X})")
+        print(f"   → Computed  : 0x{calc_crc:04X}")
+        print(f"   → Received  : 0x{packet_crc:04X}")
+        print(f"   → Packet    : {[hex(b) for b in packet]}")
+        return False
+    return True
 
-def decode_channels(data):
-    channels = []
-    for i in range(14):
-        ch_val = struct.unpack_from("<H", data, 2 + i * 2)[0]
-        channels.append(ch_val)
-    return channels
+while True:
+    data = IBUS_UART.read(64)
+    if data:
+        buffer.extend(data)
+        if len(buffer) > 256:
+            buffer = buffer[-256:]  # prevent runaway growth
 
-def get_latest_packet():
-    global last_ch_values, brake_prev_state
-    uart.readinto(buffer)
-    new_packet_found = False
-    for offset in range(len(buffer) - packet_size):
-        if buffer[offset] == 0x20 and buffer[offset + 1] == 0x40:
-            packet = buffer[offset:offset + packet_size]
-            if len(packet) == packet_size and checksum_is_valid(packet):
-                ch = decode_channels(packet)
-                last_ch_values = ch  # update cached state
-                new_packet_found = True
-                break
+        for i in range(len(buffer) - IBUS_PACKET_SIZE + 1):
+            if buffer[i:i+2] == IBUS_HEADER:
+                packet = buffer[i:i + IBUS_PACKET_SIZE]
+                if len(packet) == IBUS_PACKET_SIZE and validate_crc(packet):
+                    updates = []
+                    for ch in range(4):
+                        lo = packet[2 + ch * 2]
+                        hi = packet[3 + ch * 2]
+                        val = (hi << 8) | lo
 
-    # Print mapped intent outputs in normal mode
-    if not debug:
-        # BRAKES = CH5
-        brakes_val = last_ch_values[4]
-        brake_now = brakes_val > 1500
+                        if val != last_values[ch]:
+                            updates.append((ch + 1, val))
+                            last_values[ch] = val
 
-        if brake_now != brake_prev_state:
-            print("BRAKES: ON" if brake_now else "BRAKES: OFF")
-            brake_prev_state = brake_now
-    else:
-        for i, val in enumerate(last_ch_values):
-            print(f"CH{i + 1}: {val}", end='  ')
-        print("\n")
+                    for ch_num, val in updates:
+                        if ch_num == 4 and val == FAILSAFE_CH4_VALUE:
+                            print("🚨 CH4 appears to be in failsafe state!")
+                        print(f"✅ CH{ch_num}: {val}")
 
-    return last_ch_values
+                    buffer = buffer[i + IBUS_PACKET_SIZE:]
+                    break
+
+    time.sleep(0.01)
