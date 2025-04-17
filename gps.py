@@ -4,6 +4,8 @@
 import time
 import board
 import busio
+import struct
+
 
 # --- Register Constants ---
 GNSS_DEVICE_ADDR = 0x20
@@ -13,6 +15,7 @@ I2C_YEAR_H     = 0
 I2C_GNSS_MODE  = 34
 
 # Location and telemetry registers
+
 I2C_LAT_1      = 7 # I2C_LAT_1 = 7
 I2C_LAT_2      = 8 # 8
 I2C_LAT_X_24   = 9 # 9
@@ -40,6 +43,21 @@ I2C_COG_L      = 27
 I2C_COG_X      = 28
 
 ENABLE_POWER   = 0
+I2C_SAT_COUNT = 19  # GNSS satellite count
+
+# Exported data store
+_gnss_data = {
+    "lat": None,
+    "lon": None,
+    "alt": None,
+    "sog": None,
+    "cog": None,
+    "sats": None,
+    "fix": 3  # Default to 3D fix
+}
+
+def get_gnss_data():
+    return _gnss_data
 
 # --- I2C Init ---
 i2c = busio.I2C(scl=board.SCL, sda=board.SDA)
@@ -84,6 +102,17 @@ try:
     except Exception as e:
         print(" GNSS mode read error:", e)
 
+        # --- SATELLITE COUNT ---
+    try:
+        sat_buf = bytearray(1)
+        i2c.writeto_then_readfrom(GNSS_DEVICE_ADDR, bytes([I2C_SAT_COUNT]), sat_buf)
+        sats = sat_buf[0]
+        print(" Satellites in use: %d" % sats)
+        _gnss_data["sats"] = sats
+
+    except Exception as e:
+        print(" Satellite read error:", e)
+    
     # Lattitude
     try:
         lat_buf = bytearray(6)
@@ -100,6 +129,8 @@ try:
 
         #print(" LAT Raw:", [hex(b) for b in lat_buf], f"Dir: {dir_chr}")
         print(" Latitude: %.8f°" % latitude)
+        _gnss_data["lat"] = latitude
+
     except Exception as e:
         print(" Latitude read error:", e)
 
@@ -120,6 +151,8 @@ try:
 
         #print(" LON Raw:", [hex(b) for b in lon_buf], f"Dir: {dir_chr}")
         print(" Longitude: %.8f°" % longitude)
+        _gnss_data["lon"] = longitude
+
     except Exception as e:
         print(" Longitude read error:", e)
 
@@ -132,6 +165,8 @@ try:
         altitude = alt_int + (alt_buf[2] / 100.0)
         #print(" ALT Raw:", [hex(b) for b in alt_buf])
         print(" Altitude: %.2f m" % altitude)
+        _gnss_data["alt"] = altitude
+
     except Exception as e:
         print(" Altitude read error:", e)
 
@@ -143,6 +178,8 @@ try:
         sog = sog_int + (sog_buf[2] / 100.0)
         #print(" SOG Raw:", [hex(b) for b in sog_buf])
         print(" Speed Over Ground: %.2f knots" % sog)
+        _gnss_data["sog"] = sog
+
     except Exception as e:
         print(" Speed read error:", e)
 
@@ -154,6 +191,8 @@ try:
         cog = cog_int + (cog_buf[2] / 100.0)
         #print(" COG Raw:", [hex(b) for b in cog_buf])
         print(" Course Over Ground: %.2f°" % cog)
+        _gnss_data["cog"] = cog
+
     except Exception as e:
         print(" Course read error:", e)
 
