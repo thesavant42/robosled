@@ -27,7 +27,7 @@
 
 ## 📊 Project Progress
 - ✅ Working throttle, pivot, and braking control
-- ✅ OLED display initialized with rotation fix
+- ✅ OLED display initialized with rotation fix (90 degrees)
 - ✅ RPM measured from speed pulse (1 wheel verified)
 - ✅ Brake logic (3-way: FORCED_ON, FORCED_OFF, SWITCH)
 - ✅ Channel mapping and scale validation for CH1–CH14
@@ -94,7 +94,7 @@
 ### 📠 I2C Addresses
 | Device         | Address | Notes |
 |----------------|---------|-------|
-| SH1107 OLED    | `0x3D`  | Uses `displayio` + rotation 270°   |
+| SH1107 OLED    | `0x3D`  | Uses `displayio` + rotation 90°   |
 | GPS (DFRobot)  | `0x20`  | Proprietary register format        |
 | NeoKey 1x4     | `0x30`  | On hold for brake/confirm buttons  |
 | Qwiic Twist    | `0x3F`  | Encoder + NeoPixel visual          |
