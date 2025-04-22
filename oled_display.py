@@ -1,43 +1,28 @@
-# oled_display.py
-# note: Directly initializes i2c, do not use as is for a shared bus.
-# hard coded pins, dimensions, rotation, not ready for modular
+# /code/oled_display.py
+# SH1107 OLED init function — expects external I2C bus
+# 📌 DEVICE ADDRESS IS 0x3D — SET BY HARDWARE, DO NOT ASSUME
+# 📐 ROTATION IS 90 — NEVER USE 270
+# confirmed working as of 13:00 04/22/2025
+# no SCL in use bug
 
-import board
-import busio
 import displayio
-import terminalio
-from adafruit_display_text import label
 from adafruit_displayio_sh1107 import SH1107
 
-def init_oled():
-    """
-    Initializes the OLED display and returns the display and the label reference.
-    """
+def init_display(i2c):
     displayio.release_displays()
-    i2c = busio.I2C(scl=board.IO9, sda=board.IO8)
-    display_bus = displayio.I2CDisplay(i2c, device_address=0x3D)
-    display = SH1107(display_bus, width=128, height=128)
-    
-    main_group = displayio.Group()
-    display.root_group = main_group
+    try:
+        display_bus = displayio.I2CDisplay(i2c, device_address=0x3D)
+        display = SH1107(
+            display_bus,
+            width=128,
+            height=128,
+            rotation=90
+        )
+        return display
+    except Exception as e:
+        return None  # Caller is responsible for error reporting and fallback
 
-    channel_label = label.Label(
-        terminalio.FONT, text="", x=0, y=0, line_spacing=1.2
-    )
-    main_group.append(channel_label)
-
-    return display, channel_label
-
-def update_output(channel_map, label, verbose=False):
-    """
-    Updates the OLED label with 8-channel data.
-    """
-    label.text = "\n".join(
-        [f"CH{i}: {channel_map[i]}" for i in sorted(channel_map.keys())]
-    )
-
-    if verbose:
-        print("------------------------------")
-        for i in sorted(channel_map.keys()):
-            print(f"CH{i}: {channel_map[i]}")
+# invoke like:
+#   splash = displayio.Group()
+#   display.root_group = splash
 
