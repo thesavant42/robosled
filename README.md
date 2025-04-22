@@ -1,7 +1,19 @@
 # Robosled Project Summary
 
 ## 🚀 Project Goals
-The goal of Robosled is to create a modular, reliable, and testable forward-driven 3-wheeled robot (2WD + rear caster) controlled via an FS-i6X transmitter (OpenI6X firmware) and FlySky iA6B receiver using the I-BUS protocol. The robot uses two ZS-X11H BLDC motor controllers and features real-time feedback and control via OLED display, NeoKey, and Qwiic Twist inputs.
+- Robosled is the project to give my animatronic Master Yoda from Home Depot some mobility, by way of a scratch-built autonomous vehicle. 
+- The Roboseld features wheels repurposed from wrecked "hover boards", known elsewhere as self-stabilizing electric-unicycles (gee, wonder why they changed the name?) 
+- The goal of the Robosled code is to create a modular, reliable, and testable forward-driven 3-wheeled robot (2WD + rear caster)
+  -- controlled via an FS-i6X transmitter (OpenI6X firmware) and
+  -- FlySky iA6B receiver
+    - Connected via UART
+  - Using the I-BUS16 protocol
+    - For 14-usable channels over 1-wire
+    - Sends telemetry from robot over UART back to the RC transciever
+  
+- The robot uses two ZS-X11H BLDC motor controllers
+- Features real-time feedback and control via:
+  -- OLED display, NeoKey, and Qwiic Twist inputs.
 
 ### Key Objectives:
 - 🧠 Smart throttle and pivot logic with safe reverse enforcement
