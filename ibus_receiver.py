@@ -1,5 +1,7 @@
 # ibus_receiver_debug.py
 # Reads FlySky IBUS packets from UART and prints CH1–CH4 with CRC verification and raw scaling
+# hardcoded uart pins, not ready for modular
+# bugs: only shows 1-4 instead of 1-14
 
 import time
 import board
@@ -7,12 +9,12 @@ import busio
 
 # === CONFIGURATION ===
 IBUS_UART = busio.UART(
-    tx=board.IO43,
-    rx=board.IO44,  # Change this to your RX pin if different
+    tx=board.IO43,    # Change this to your RX pin if different
+    rx=board.IO44,    # Change this to your RX pin if different
     baudrate=115200,
-    bits=8,
-    parity=None,
-    stop=2,
+    bits=8,            # 8N2
+    parity=None,       # 8N2 
+    stop=2,            # 8N2
     timeout=0.01,
     receiver_buffer_size=512
 )
@@ -21,7 +23,7 @@ IBUS_CHANNEL_COUNT = 14
 IBUS_PACKET_SIZE = 32
 IBUS_HEADER = b"\x20\x40"
 FAILSAFE_CH4_VALUE = 50661
-print("🎮 CH1–CH4 monitor with CRC debug and raw 16-bit scaling...")
+print("🎮 CH1–CH14 monitor with CRC debug and raw 16-bit scaling...")
 
 last_values = [None] * 4  # For CH1 to CH4
 buffer = bytearray()
