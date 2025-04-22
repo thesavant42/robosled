@@ -1,4 +1,5 @@
 # oled_display.py
+# note: Directly initializes i2c, do not use as is for a shared bus.
 
 import board
 import busio
