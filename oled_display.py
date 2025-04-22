@@ -1,5 +1,6 @@
 # oled_display.py
 # note: Directly initializes i2c, do not use as is for a shared bus.
+# hard coded pins, dimensions, rotation, not ready for modular
 
 import board
 import busio
