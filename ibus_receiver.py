@@ -1,5 +1,5 @@
 # ibus_receiver_debug.py
-# Reads FlySky IBUS packets from UART and prints CH1–CH4 with CRC verification and raw scaling
+# Reads FlySky IBUS packets from UART and prints CH1–CH14 with CRC verification and raw scaling
 # hardcoded uart pins, not ready for modular
 # bugs: only shows 1-4 instead of 1-14
 
