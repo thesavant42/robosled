@@ -15,7 +15,7 @@ def init_oled():
     displayio.release_displays()
     i2c = busio.I2C(scl=board.IO9, sda=board.IO8)
     display_bus = displayio.I2CDisplay(i2c, device_address=0x3D)
-    display = SH1107(display_bus, width=128, height=64)
+    display = SH1107(display_bus, width=128, height=128)
     
     main_group = displayio.Group()
     display.root_group = main_group
