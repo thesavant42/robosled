@@ -19,8 +19,5 @@ MOTOR_RIGHT_BRAKE_PIN = D15
 DEBUG = True
 DEBUG_LEVEL = 3
 
-# RC Receiver configuration
-RC_SBUS_PIN = D21
-
 # PWM output frequency (Hz)
 TARGET_PWM_FREQUENCY = 2000
