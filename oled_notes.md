@@ -6,8 +6,8 @@
 - **Dimensions:** 128 × 128 (square)
 - **Color:** Monochrome (1-bit)
 - **Bus:** I2C
-- **I2C Address:** `0x3D` (⚠️ not the default `0x3C`)
-- **Rotation:** `rotation=90` (✅ never 270, always 90 for proper upright text)
+- **I2C Address:** `0x3D` (⚠️ not `0x3C`)
+- **Rotation:** `rotation=90` (✅ always 90 for proper upright text)
 
 ---
 
