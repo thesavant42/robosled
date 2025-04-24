@@ -120,4 +120,56 @@ def prompt_action(devices):
         else:
             print("Invalid selection. Enter a number from 1 to 5.")
 
-# The rest of the script remains unchanged...
+# === Main Loop ===
+while True:
+    devices = prompt_device()
+    pwm_channels = []
+    for dev in devices:
+        pwm_channels.append(setup_device(dev))
+
+    while True:
+        action = prompt_action(devices)
+        if action == 5:
+            break
+
+        for i, dev in enumerate(devices):
+            pwm, dir_pin, stop, brake, pulse = pwm_channels[i]
+            name = dev['name']
+
+            if action == 1:
+                brake.value = not brake.value
+                print(f"[{i}] {name} brake toggled: {'ENGAGED' if brake.value else 'RELEASED'}")
+
+            elif action == 2:
+                dir_pin.value = not dir_pin.value
+                current_dir = 'FORWARD' if dir_pin.value == dev['FWD'] else 'REVERSE'
+                print(f"[{i}] {name} direction set to: {current_dir}")
+
+            elif action == 3:
+                stop.value = not stop.value
+                print(f"[{i}] {name} STOP toggled: {'ENABLED' if stop.value else 'DISABLED'}")
+
+            elif action == 4:
+                print(f"[{i}] Starting PWM ramp for {name}...")
+                brake.value = False
+                pwm.duty_cycle = 0
+                stop.value = True
+                time.sleep(0.5)
+
+                for dc in range(0, 101, 10):
+                    pwm.duty_cycle = int(dc / 100 * 65535)
+                    print(f"    {name} PWM: {dc}%")
+                    time.sleep(0.3)
+
+                for dc in range(100, -1, -10):
+                    pwm.duty_cycle = int(dc / 100 * 65535)
+                    print(f"    {name} PWM: {dc}%")
+                    time.sleep(0.3)
+
+                pwm.duty_cycle = 0
+                brake.value = True
+                stop.value = False
+                print(f"[{i}] PWM ramp complete. Brake re-engaged, ESC disabled.")
+
+        print("
+✅ Test complete. Returning to menu.")
