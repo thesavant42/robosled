@@ -1,21 +1,19 @@
-# Pin Map
+### 🛞 Left Wheel Pin Map
 
-## Left Wheel
+| Signal | `board.Dxx` | Actual `IOxx` | Notes                   |
+|--------|-------------|---------------|-------------------------|
+| PWM    | `board.D13` | `IO11`        | Confirmed functional    |
+| DIR    | `board.D9`  | `IO1`         | Forward = HIGH          |
+| STOP   | `board.D10` | `IO3`         | ESC Enable, HIGH = on   |
+| BRAKE  | `board.D6`  | `IO38`        | Brake Active = HIGH     |
+| PULSE  | `board.D12` | `IO10`        | ✅ Confirmed pulse input |
 
-Function        | Pin              | Notes
-PWM             | board.D13 / IO13 | Speed control via PWM
-DIR (Direction) | board.D9 / IO9   | HIGH = Forward
-STOP (Enable)   | board.D10 / IO10 | Must be HIGH to run
-BRAKE           | board.D6 / IO6   | HIGH = Brakes engaged
-SPEED           | board.D12 / IO12 | ✅ Confirmed using countio
-FWD Logic       | True (HIGH)      | DIR = HIGH means forward
+### 🛞 Right Wheel Pin Map
 
-## Right Wheel
-
-Function         | Pin              | Notes
-PWM              | board.D19 / IO19 | Speed control via PWM
-DIR (Direction)  | board.D16 / IO16 | LOW = Forward
-STOP (Enable)    | board.D17 / IO17 | Must be HIGH to run
-BRAKE            | board.D15 / IO15 | HIGH = Brakes engaged
-PULSE            | board.D14 / IO14 | ✅ Confirmed using countio
-FWD Logic        | False (LOW)      | DIR = LOW means forward
+| Signal | `board.Dxx` | Actual `IOxx` | Notes                   |
+|--------|-------------|---------------|-------------------------|
+| PWM    | `board.D19` | `IO5`         | Confirmed functional    |
+| DIR    | `board.D16` | `IO14`        | Forward = LOW           |
+| STOP   | `board.D17` | `IO12`        | ESC Enable, HIGH = on   |
+| BRAKE  | `board.D15` | `IO18`        | Brake Active = HIGH     |
+| PULSE  | `board.D14` | `IO6`         | ✅ Confirmed pulse input |
