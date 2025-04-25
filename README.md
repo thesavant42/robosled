@@ -72,24 +72,27 @@
 | CH10    | VARB Knob     | Unused                       | -100 to +100          |
 | CH11–14 | -             | Unused                       | Varies                 |
 
-### 📌 GPIO Pin Mapping
-| Purpose       | Pin       | Notes                              |
-|---------------|-----------|------------------------------------|
-| Left PWM      | `D17`     |                                    |
-| Left DIR      | `D20`     | `forward_is_low=False`             |
-| Left BRAKE    | `D15`     | Active HIGH                        |
-| Left ENABLE   | `D18`     | Must stay HIGH                     |
-| Right PWM     | `D9`      |                                    |
-| Right DIR     | `D10`     | `forward_is_low=True`              |
-| Right BRAKE   | `D6`      | Active HIGH                        |
-| Right ENABLE  | `D8`      | Must stay HIGH                     |
-| Speed Pulse L | TBD       | To be tested                       |
-| Speed Pulse R | TBD       | Confirmed working on 1 channel     |
-| OLED SDA      | `IO8`     | SH1107 I2C + shared bus            |
-| OLED SCL      | `IO9`     | I2C SCL (conflict risk on reinit)  |
-| UART RX       | `IO44`    | IBUS input from iA6B               |
-| UART TX       | `IO43`    | Telemetry (future IBUS16 sensor)  |
-| Unmapped GPIO |           | To be assigned                    |
+### 🛞 Left Wheel Pin Map
+
+| Signal | `board.Dxx` | Actual `IOxx` | Notes                   |
+|--------|-------------|---------------|-------------------------|
+| PWM    | `board.D13` | `IO11`        | Confirmed functional    |
+| DIR    | `board.D9`  | `IO1`         | Forward = HIGH          |
+| STOP   | `board.D10` | `IO3`         | ESC Enable, HIGH = on   |
+| BRAKE  | `board.D6`  | `IO38`        | Brake Active = HIGH     |
+| PULSE  | `board.D12` | `IO10`        | ✅ Confirmed pulse input |
+
+### 🛞 Right Wheel Pin Map
+
+| Signal | `board.Dxx` | Actual `IOxx` | Notes                   |
+|--------|-------------|---------------|-------------------------|
+| PWM    | `board.D19` | `IO5`         | Confirmed functional    |
+| DIR    | `board.D16` | `IO14`        | Forward = LOW           |
+| STOP   | `board.D17` | `IO12`        | ESC Enable, HIGH = on   |
+| BRAKE  | `board.D15` | `IO18`        | Brake Active = HIGH     |
+| PULSE  | `board.D14` | `IO6`         | ✅ Confirmed pulse input |
+| UARTTX | `board.D1`  | `IO43`        | main UART TX            |
+| UARTRX | `board.D0`  | `IO44`        | main UART TX            |
 
 ### 📠 I2C Addresses
 | Device         | Address | Notes |
