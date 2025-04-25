@@ -9,7 +9,7 @@ import time
 import os
 import rtc
 import supervisor
-import pulseio
+import countio
 
 # === Pin Map with Forward Logic, Speed Pulse, and Desired Start State ===
 LEFT = {
@@ -93,11 +93,10 @@ def print_device_status(device, dir_pin, stop, brake, pulse):
     print(f" STOP (Enable): {'HIGH' if stop.value else 'LOW'}")
     print(f" FWD logic: {'HIGH' if device['FWD'] else 'LOW'}")
 
-
 def sniff_pulse_pin_active(device):
     print(f"\n🔍 Starting single-pin pulse scan for {device['name']}...")
 
-    candidate_pins = [board.IO10, board.IO17]
+    candidate_pins = [board.IO6]    # IO6 Right Wheel, IO10 Left
     duration = 10
 
     brake = last_brake
@@ -108,14 +107,7 @@ def sniff_pulse_pin_active(device):
         print(f"\n🚦 Testing pin {pin} for {duration} seconds...")
 
         try:
-            dio = digitalio.DigitalInOut(pin)
-            dio.switch_to_input(pull=digitalio.Pull.UP)
-            dio.deinit()
-
-            p = pulseio.PulseIn(pin, maxlen=200, idle_state=True)
-            p.clear()
-            p.resume()
-
+            counter = countio.Counter(pin, edge=countio.Edge.RISE)
             brake.value = False
             pwm.duty_cycle = 0
             stop.value = True
@@ -124,26 +116,23 @@ def sniff_pulse_pin_active(device):
             print(f"[RUN] Motor active. Sampling {pin}...")
 
             start = time.monotonic()
-            prev_count = 0
+            last = 0
             while time.monotonic() - start < duration:
-                current_count = len(p)
-                if current_count > prev_count:
-                    for i in range(prev_count, current_count):
-                        print(f"  📉 Edge[{i}] = {p[i]} µs")
-                    prev_count = current_count
-                time.sleep(0.2)
+                now = counter.count
+                if now > last:
+                    print(f" 🌀 {now - last} edge(s) — total = {now}")
+                    last = now
+                time.sleep(0.5)
 
             pwm.duty_cycle = 0
             brake.value = True
             stop.value = False
-            p.pause()
-            p.deinit()
-            print(f"[DONE] {current_count} edges detected on pin {pin}. Motor stopped.\n")
-            break  # Exit after one test
+            print(f"[DONE] {counter.count} rising edges detected on pin {pin}. Motor stopped.\n")
+            counter.deinit()
+            break
 
         except Exception as e:
             print(f" ⚠️ Skipping pin {pin}: {e}")
-
 
 def wheel_test_menu(device, pwm, dir_pin, stop, brake, pulse):
     while True:
