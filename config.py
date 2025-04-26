@@ -20,7 +20,7 @@ MOTOR_CONFIG = {
         'DIR': board.D16,       # aka IO14
         'STOP': board.D17,      # aka IO12
         'BRAKE': board.D15,     # aka IO18
-        'PULSE': board.D14,     # aka IO17
+        'PULSE': board.D18,     # aka IO16
         'FWD': False,
         'DESIRED_DIR': 'FWD'
     }
